@@ -17,6 +17,13 @@ typedef struct _DPBState
 	RefListInfo refListInfo[MAX_DPB_SIZE];
 }DPBState;
 
+class CDpbManage
+{
+public:
+	CDpbManage();
+	~CDpbManage();
+};
+
 
 
 #endif
