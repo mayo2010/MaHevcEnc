@@ -14,7 +14,7 @@ typedef struct _DPBState
 	uint32      uiCurBufIdx;
 	uint32      uiForwardRefNum;
 	uint32      uiForwardRefList[MAX_REF_NUM];//L0
-	RefListInfo refListInfo[MAX_DPB_SIZE];
+	RefListInfo refList[MAX_REF_NUM];//L0
 }DPBState;
 
 class CDpbManage

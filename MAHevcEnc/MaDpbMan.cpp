@@ -9,10 +9,10 @@ CDpbManage::CDpbManage()
 
 	for(uint32 i = 0; i < MAX_DPB_SIZE; i++)
 	{
-		m_DpbState.refListInfo[i].bUsed = false;
-		m_DpbState.refListInfo[i].uiBufIdx = i;
-		m_DpbState.refListInfo[i].uiFrmIdx = 0;
-		m_DpbState.refListInfo[i].uiPoc = 0;
+		m_DpbState.refList[i].bUsed = false;
+		m_DpbState.refList[i].uiBufIdx = i;
+		m_DpbState.refList[i].uiFrmIdx = 0;
+		m_DpbState.refList[i].uiPoc = 0;
 	}
 	m_DpbState.uiCurBufIdx = 0;//cur frame
 	memset(&m_DpbState.uiForwardRefList[0], 0x0, sizeof(uint32) * MAX_REF_NUM);
@@ -43,23 +43,43 @@ uint32 CDpbManage::GetCurFrmBufIdx()
 {
 	for(uint32 i = 0; i < MAX_DPB_SIZE;i++)
 	{
-		if(m_DpbState.refListInfo[i].bUsed == false)
+		if(m_DpbState.refList[i].bUsed == false)
 			return i;
 	}
 }
 
+//construct refList
+// get img data by uiBufIdx from DPB
 void CDpbManage::UpDateDpb(uint32 uiSliceType)
 {
 	uint32 uiCurFrmBufIdx = GetCurFrmBufIdx();
 	uint32 uiCurFrmPoc = GetCurFrmPoc(m_uiCurFrmIdx);
-	m_DpbState.refListInfo[uiCurFrmBufIdx].bUsed = true;
-	m_DpbState.refListInfo[uiCurFrmBufIdx].uiFrmIdx = m_uiCurFrmIdx;
-	m_DpbState.refListInfo[uiCurFrmBufIdx].uiPoc = uiCurFrmPoc;
-
+	uint32 uiRefIdx = 0;//we only consider one ref frame
+	m_DpbState.refList[uiCurFrmBufIdx].bUsed = true;
+	m_DpbState.refList[uiCurFrmBufIdx].uiFrmIdx = m_uiCurFrmIdx;
+	m_DpbState.refList[uiCurFrmBufIdx].uiPoc = uiCurFrmPoc;
 	if(uiSliceType != HEVC_I_SLICE)
 	{
-
+		//descending order the refList in order to POC
+		for(uint32 i = 0; i < MAX_REF_NUM; i++)
+		{
+			RefListInfo tempRefList = m_DpbState.refList[i];
+			uint32 uiRefPoc = m_DpbState.refList[i].uiPoc;
+			m_DpbState.uiForwardRefList[uiRefIdx] = m_DpbState.refList[i].uiBufIdx;
+			for(uint32 j = i + 1; j < MAX_REF_NUM; j++)
+			{
+				if(m_DpbState.refList[j].uiPoc > uiRefPoc && m_DpbState.refList[j].uiPoc < uiCurFrmPoc \
+					&& m_DpbState.refList[j].bUsed == true)//changing i and j
+				{
+					uiRefPoc = m_DpbState.refList[j].uiPoc;
+					m_DpbState.refList[i] = m_DpbState.refList[j];
+					m_DpbState.refList[j] = tempRefList;
+					tempRefList = m_DpbState.refList[i];
+					m_DpbState.uiForwardRefList[uiRefIdx] = m_DpbState.refList[i].uiBufIdx;
+				}
+			}
+			uiRefIdx++;
+		}
 	}
-
 
 }

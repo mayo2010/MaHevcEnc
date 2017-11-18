@@ -1,11 +1,16 @@
 #ifndef _COMMON_
 #define _COMMON_
-
+#include <memory.h>
+#include <stdio.h>
 typedef unsigned int uint32;
 typedef unsigned int BOOL;
 typedef unsigned char uint8;
+typedef unsigned char Pel;
 #define MAX_DPB_SIZE 16
 #define MAX_REF_NUM  8
+
+#define MAX_CU_SIZE 64
+#define LOG2_MAX_CU_SIZE 6
 
 template<typename T>
 inline T x265_min(T a, T b) { return a < b ? a : b; }
@@ -45,4 +50,21 @@ typedef struct _GlobalParam
 	bool	bEnSao;
 	bool	bEnTuSplit;
 }GlobalParam;
+
+class CYuvReader
+{
+public:
+	CYuvReader();
+	~CYuvReader();
+	void SetCommonParam(const GlobalParam *pGloParams);
+	void SetSrcImgPtr(Pel *pSrcImg);
+	void ReadOneFrmData(uint32 uiFrmIdx);
+public:
+	char   m_InpuYuvPath[MAX_LENGTH];
+	Pel *m_pSrcImg;
+	uint32 m_uiImgWidth;
+	uint32 m_uiImgHeight;
+	FILE *m_pYuvFile;
+
+};
 #endif

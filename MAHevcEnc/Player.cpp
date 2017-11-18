@@ -7,6 +7,10 @@
 #include <memory.h>
 #include "Common.h"
 #include "Command.h"
+#include "HevcEntropy.h"
+#include "MaDpbMan.h"
+#include "MaHevc.h"
+
 
 const char *globalParam[][2] = 
 {
@@ -153,5 +157,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	GlobalParam inputParam;
 	ParseParam(argc, argv, inputParam);
+	CHevcEnc *pHevcEnc = new CHevcEnc();
+	pHevcEnc->SetGloParams(&inputParam);
 	return 0;
 }
