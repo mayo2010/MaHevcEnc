@@ -24,5 +24,25 @@ enum HEVC_SLICE_TYPE
 	HEVC_INVALID_SLICE
 };
 
-
+#define MAX_LENGTH 1024
+typedef struct _GlobalParam
+{
+	_GlobalParam()
+	{
+		memset(this, 0x0, sizeof(_GlobalParam));
+	}
+	char	inpuYuvPath[MAX_LENGTH];//input yuv
+	char	recPath[MAX_LENGTH];//recon yuv
+	char	outPutPath[MAX_LENGTH];//bit stream
+	uint32	uiOriWidth;
+	uint32	uiOriHeight;
+	uint32	uiEncFrameNum;//how many frames to be coded
+	uint32	uiIntraPeriod;
+	uint32	uiMeSearchRng;
+	uint8	uiMeSearchPace;
+	bool	bEnFracSearch;//
+	bool	bEnDbk;
+	bool	bEnSao;
+	bool	bEnTuSplit;
+}GlobalParam;
 #endif
