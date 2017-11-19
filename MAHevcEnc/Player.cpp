@@ -159,5 +159,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	ParseParam(argc, argv, inputParam);
 	CHevcEnc *pHevcEnc = new CHevcEnc();
 	pHevcEnc->SetGloParams(&inputParam);
+	pHevcEnc->KickOffEnc();
+
+	if(pHevcEnc)
+	{
+		delete pHevcEnc;
+		pHevcEnc = NULL;
+	}
 	return 0;
 }

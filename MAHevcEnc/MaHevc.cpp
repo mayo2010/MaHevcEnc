@@ -10,6 +10,9 @@ CHevcEnc::CHevcEnc()
 	m_pHevcMe      = NULL;
 	m_pDpbMan      = NULL;
 	m_pYuvReader   = NULL;
+	m_pSrcImg      = NULL;
+	memset(m_pDpbBuffer, 0x0, sizeof(Pel*) * MAX_DPB_SIZE);
+
 }
 
 CHevcEnc::~CHevcEnc()
@@ -28,6 +31,20 @@ CHevcEnc::~CHevcEnc()
 	{
 		delete m_pHevcMe;
 		m_pHevcMe = NULL;
+	}
+	for(uint32 i = 0; i < MAX_DPB_SIZE; i++)
+	{
+		if(m_pDpbBuffer[i])
+		{
+			delete m_pDpbBuffer[i];
+			m_pDpbBuffer[i] = NULL;
+		}
+	}
+
+	if(m_pSrcImg)
+	{
+		delete m_pSrcImg;
+		m_pSrcImg = NULL;
 	}
 }
 
@@ -72,19 +89,23 @@ void CHevcEnc::EncInit()
 	uint32 uiWidth = GetImgWidth();
 	uint32 uiHeight = GetImgHeight();
 	assert(uiWidth != 0 && uiHeight != 0);
+	uint32 uiOneFrmSizeByte = uiWidth * uiHeight * 1.5;
 	for(uint32 i = 0; i < MAX_DPB_SIZE; i++)
 	{
-		m_pDpbBuffer[i] = (Pel*)malloc(sizeof(Pel) * uiWidth * uiHeight * 1.5);
+		m_pDpbBuffer[i] = (Pel*)malloc(sizeof(Pel) * uiOneFrmSizeByte);
 		assert(m_pDpbBuffer[i] != NULL);
+		memset(m_pDpbBuffer[i], 0x0, sizeof(Pel) * uiOneFrmSizeByte);
 	}
-	m_pSrcImg = (Pel*)malloc(sizeof(Pel) * uiWidth * uiHeight * 1.5);
-
+	m_pSrcImg = (Pel*)malloc(sizeof(Pel) * uiOneFrmSizeByte);
+	memset(m_pSrcImg, 0x0, sizeof(Pel) * uiWidth * uiHeight * 1.5);
 	m_uiPicWidthInCtu = (uiWidth + (MAX_CU_SIZE >> 1)) >> LOG2_MAX_CU_SIZE;
 	m_uiPicHeightInCtu = (uiHeight + (MAX_CU_SIZE >> 1)) >> LOG2_MAX_CU_SIZE;
 
 	m_pYuvReader = new CYuvReader();
 	m_pYuvReader->SetCommonParam(&m_gGloParams);
 	m_pYuvReader->SetSrcImgPtr(m_pSrcImg);
+
+	m_pDpbMan = new CDpbManage();
 }
 
 uint32 CHevcEnc::GetImgWidth()

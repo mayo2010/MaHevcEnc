@@ -65,6 +65,7 @@ public:
 	uint32 m_uiImgWidth;
 	uint32 m_uiImgHeight;
 	FILE *m_pYuvFile;
+	const char *m_pYuv;
 
 };
 #endif

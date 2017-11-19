@@ -7,7 +7,7 @@ CDpbManage::CDpbManage()
 
 	//init the m_DpbState
 
-	for(uint32 i = 0; i < MAX_DPB_SIZE; i++)
+	for(uint32 i = 0; i < MAX_REF_NUM; i++)
 	{
 		m_DpbState.refList[i].bUsed = false;
 		m_DpbState.refList[i].uiBufIdx = i;
@@ -21,7 +21,7 @@ CDpbManage::CDpbManage()
 
 CDpbManage::~CDpbManage()
 {
-
+	
 }
 
 void CDpbManage::SetCurFrmIdx(uint32 uiFrmIdx)
@@ -55,9 +55,7 @@ void CDpbManage::UpDateDpb(uint32 uiSliceType)
 	uint32 uiCurFrmBufIdx = GetCurFrmBufIdx();
 	uint32 uiCurFrmPoc = GetCurFrmPoc(m_uiCurFrmIdx);
 	uint32 uiRefIdx = 0;//we only consider one ref frame
-	m_DpbState.refList[uiCurFrmBufIdx].bUsed = true;
-	m_DpbState.refList[uiCurFrmBufIdx].uiFrmIdx = m_uiCurFrmIdx;
-	m_DpbState.refList[uiCurFrmBufIdx].uiPoc = uiCurFrmPoc;
+
 	if(uiSliceType != HEVC_I_SLICE)
 	{
 		//descending order the refList in order to POC
@@ -82,4 +80,7 @@ void CDpbManage::UpDateDpb(uint32 uiSliceType)
 		}
 	}
 
+	m_DpbState.refList[uiCurFrmBufIdx].bUsed = true;
+	m_DpbState.refList[uiCurFrmBufIdx].uiFrmIdx = m_uiCurFrmIdx;
+	m_DpbState.refList[uiCurFrmBufIdx].uiPoc = uiCurFrmPoc;
 }
