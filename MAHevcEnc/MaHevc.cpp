@@ -89,6 +89,9 @@ void CHevcEnc::EncInit()
 	uint32 uiWidth = GetImgWidth();
 	uint32 uiHeight = GetImgHeight();
 	assert(uiWidth != 0 && uiHeight != 0);
+
+	m_uiAlignPicWidth = (uiWidth & 0xfffffff8) + ((uiWidth & 0x7)? 8 : 0);
+	m_uiAlignPicHeight = (uiHeight & 0xfffffff8) + ((uiHeight & 0x7)? 8 : 0);
 	uint32 uiOneFrmSizeByte = uiWidth * uiHeight * 1.5;
 	for(uint32 i = 0; i < MAX_DPB_SIZE; i++)
 	{

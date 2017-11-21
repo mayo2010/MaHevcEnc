@@ -34,4 +34,6 @@ public:
 	GlobalParam m_gGloParams;
 	uint32 m_uiPicWidthInCtu;
 	uint32 m_uiPicHeightInCtu;
+	uint32 m_uiAlignPicWidth;//8 pix align
+	uint32 m_uiAlignPicHeight;//8 pix align
 };
