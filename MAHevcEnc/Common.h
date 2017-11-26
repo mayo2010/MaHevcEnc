@@ -54,6 +54,7 @@ typedef struct _GlobalParam
 	uint32	uiIntraPeriod;
 	uint32	uiMeSearchRng;
 	uint8	uiMeSearchPace;
+	uint8   qp;
 	bool	bEnFracSearch;//
 	bool	bEnDbk;
 	bool	bEnSao;

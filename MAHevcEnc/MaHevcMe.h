@@ -7,6 +7,7 @@ public:
 	CHevcMe();
 	~CHevcMe();
 public:
+	
 
 };
 

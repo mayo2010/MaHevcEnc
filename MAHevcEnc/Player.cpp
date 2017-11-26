@@ -117,6 +117,13 @@ void ParseParam(int argc, _TCHAR* argv[], GlobalParam& param)
 		param.uiMeSearchRng = atoi(SearchRng.c_str());
 	}
 
+	iArgNum = pCmdLine->GetArgumentCount(_T("-Qp"));
+	if(iArgNum == 1)
+	{
+		tstring qp = pCmdLine->GetArgument(_T("-Qp"), 0);
+		param.qp = atoi(qp.c_str());
+	}
+
 	iArgNum = pCmdLine->GetArgumentCount(_T("-SearchPace"));
 	if(iArgNum == 1)
 	{

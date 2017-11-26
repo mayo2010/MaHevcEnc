@@ -77,7 +77,9 @@ void CHevcEnc::KickOffEnc()
 			{
 				for(uint32 x = 0; x < m_uiPicWidthInCtu; x++)
 				{
+					uint32 uiCurCtuAddr = y * m_uiPicWidthInCtu + x;
 					//here encode one CTU as raster order
+					EncodeOneCtu(uiCurCtuAddr);
 				}
 			}
 		}
@@ -109,6 +111,13 @@ void CHevcEnc::EncInit()
 	m_pYuvReader->SetSrcImgPtr(m_pSrcImg);
 
 	m_pDpbMan = new CDpbManage();
+	m_pCtuInfos = new CtuInfo[m_uiPicWidthInCtu * m_uiPicHeightInCtu];
+	if(m_pCtuInfos == NULL)
+		assert(0);
+	memset(m_pCtuInfos, 0x0, sizeof(CtuInfo) * m_uiPicWidthInCtu * m_uiPicHeightInCtu);
+
+	m_pHevcInp = new CHevcInp();
+
 }
 
 uint32 CHevcEnc::GetImgWidth()
@@ -134,4 +143,9 @@ void CHevcEnc::GetRefImg()
 void CHevcEnc::GetCurFrmBuf()
 {
 	m_pCurReconImg = m_pDpbBuffer[m_pDpbMan->m_DpbState.uiCurBufIdx];
+}
+
+void CHevcEnc::EncodeOneCtu(uint32 curCtuAddr)
+{
+	bool bCurCuSplit = true;
 }
